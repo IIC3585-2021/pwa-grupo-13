@@ -1,13 +1,53 @@
+const APP_SERVER_KEY = "test"
+
+function urlBase64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - base64String.length % 4) % 4);
+  var base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+  var rawData = window.atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+
+  for (var i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+const askPermission = () => {
+  return new Promise((resolve, reject) => {
+    const permissionResult = Notification.requestPermission((result) => {
+      resolve(result)
+    })
+    if (permissionResult) {
+      permissionResult.then(resolve, reject)
+    }
+  })
+  .then((permissionResult) => {
+    if (permissionResult !== 'granted') {
+      throw new Error('Notification permission denied')
+    }
+  })
+}
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function() {
     navigator.serviceWorker
       .register("/serviceWorker.js",{
         scope: "/"
       })
-      .then(res => console.log("service worker registered"))
+      .then(res => {
+        console.log("service worker registered")
+        askPermission().then(() => {
+          const options = {
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(APP_SERVER_KEY)
+          }
+      })
       .catch(err => console.log("service worker not registered", err));
   });
-}
+})}
 
 const container = document.querySelector(".container")
 const navIconLi = document.getElementById("nav-icon-li")
@@ -40,3 +80,9 @@ const showCoffees = () => {
   }
 
 document.addEventListener("DOMContentLoaded", showCoffees);
+
+const notify = () => {
+  let n = new Notification('Publicación compartida', {
+    body: "Gracias PWA"
+  })
+}
