@@ -35,7 +35,12 @@ function fromNetwork(request, timeout) {
     var timeoutId = setTimeout(reject, timeout);
     fetch(request).then(function (response) {
       clearTimeout(timeoutId);
-      fulfill(response);
+      caches.open(staticDevCoffee).then(cache => {
+        cache.put(request, response.clone());
+        console.log("assets refreshed");
+      })
+      .then(refresh(response))
+      .then(fulfill(response))
     }, reject);
   });
 }
@@ -44,6 +49,19 @@ function fromCache(request) {
   return caches.open(staticDevCoffee).then(function(cache) {
     return cache.match(request).then(function(matching) {
       return matching || Promise.reject('no-match');
+    });
+  });
+}
+
+function refresh(response) {
+  return self.clients.matchAll().then(function (clients) {
+    clients.forEach(function (client) {
+      var message = {
+        type: 'refresh',
+        url: response.url,
+        eTag: response.headers.get('ETag')
+      };
+      client.postMessage(JSON.stringify(message));
     });
   });
 }
