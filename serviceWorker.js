@@ -1,4 +1,5 @@
 const staticDevCoffee = "dev-coffee-site-v1"
+const timeoutWait = 500
 const assets = [
   "/",
   "/favicon.ico",
@@ -24,7 +25,7 @@ self.addEventListener("install", installEvent => {
 
 self.addEventListener('fetch', function(evt) {
   console.log('The service worker is serving the asset: ' + evt.request.url);
-  evt.respondWith(fromNetwork(evt.request, 400).catch(function () {
+  evt.respondWith(fromNetwork(evt.request, timeoutWait).catch(function () {
     return fromCache(evt.request);
   }));
 });
