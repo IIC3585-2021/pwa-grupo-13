@@ -2,6 +2,7 @@
   "theme_color": "#35f672",
   "background_color": "#ffffff",
   "display": "standalone",
+  "orientation": "portrait",
   "scope": "/",
   "start_url": "/index.html",
   "name": "FakeDuck",
