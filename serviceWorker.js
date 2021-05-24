@@ -1,7 +1,7 @@
 const staticDevCoffee = "dev-coffee-site-v1"
 const timeoutWait = 500
 const assets = [
-  "/",
+  // "/",
   "/favicon.ico",
   "/index.html",
   "/css/style.css",
