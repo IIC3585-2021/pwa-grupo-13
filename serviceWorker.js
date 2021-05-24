@@ -1,3 +1,5 @@
+// Codigo de referencia: https://serviceworke.rs/strategy-cache-update-and-refresh_service-worker_doc.html
+
 const staticDevCoffee = "dev-coffee-site-v1"
 const timeoutWait = 500
 const assets = [
